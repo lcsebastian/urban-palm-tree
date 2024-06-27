@@ -10,15 +10,19 @@ The goal is to allow the user to input specific job titles, or a parseable-json 
 
 # Architecture
 ## Frontend
-WIP 🤠
+- htmx or Hyperscript
+- Containerized using Docker
 ## Backend
-
+- Golang REST service with Gin (https://gin-gonic.com/docs/)
+- Database layer will just be in-memory for now
+- Containerized using Docker
 
 # Project Structure
 WIP 🤠
 
 # Testing
-WIP 🤠
+- Gingko test suites
+- Integration testing
 
 # Deployment
 WIP 🤠
@@ -93,5 +97,5 @@ Response Body, 200
 WIP 🤠
 
 # Example Usage
-The user will hit the API endpoint 
+WIP 🤠
 
