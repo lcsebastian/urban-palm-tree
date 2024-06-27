@@ -6,6 +6,16 @@ The goal is to allow the user to input specific job titles, or a parseable-json 
 
 1. Write a web scraping component or board API connector component for each Job board (linked in, indeed, dice, glassdoor, ziprecruiter, etc). Try to make this as generic as possible. 
 2. Write an AI API connector component that will accept the resume and filters and call the job board connector component.
-3. Write a user component that will store ephermal user data in a cache, like the resume, email, match threshold and saved job links.
+3. Write a user component that will store ephermal user data in a cache, like the resume, email, match threshold and saved job links. The cache data should be exportable to CSV. 
 
 # Architecture
+## Frontend
+~WIP~ 🤠
+## Backend
+
+# Project Structure
+~WIP~ 🤠
+# Testing
+~WIP~ 🤠
+# Deployment
+~WIP~ 🤠
