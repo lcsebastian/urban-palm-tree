@@ -10,12 +10,12 @@ The goal is to allow the user to input specific job titles, or a parseable-json 
 
 # Architecture
 ## Frontend
-~WIP~ 🤠
+WIP 🤠
 ## Backend
 
 # Project Structure
-~WIP~ 🤠
+WIP 🤠
 # Testing
-~WIP~ 🤠
+WIP 🤠
 # Deployment
-~WIP~ 🤠
+WIP 🤠
