@@ -51,8 +51,9 @@ GET /filters/1
 PUT /filters/1
 ```
 
+LLMs take a long time to do anything, so this will be an async operation.
 ```
-POST /llm-match
+POST /match
 Request body
 {
 "resume_id" : 1,
@@ -61,8 +62,33 @@ Request body
 "send_email": true
 }
 
-Response body
-[ "job.link/1", "job.link/2"]
+Response body, code 202 Accepted
+{
+"job_status": "/match/status/12345"
+}
+```
+```
+GET /match/status/12345
+Response Body - In Progress, 200
+{
+  "status" : "IN_PROGRESS"
+}
+
+Response Body - Complete, 303
+{
+"status": "COMPLETE",
+"match_id" : 12345
+}
+```
+
+```
+GET /match/12345
+Response Body, 200
+{
+"resume_id" : 1,
+"filter_id": 1,
+"matches" : [ "job.link/1", "job.link/2"]
+}
 ```
 WIP 🤠
 
