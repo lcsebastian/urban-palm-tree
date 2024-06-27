@@ -13,9 +13,18 @@ The goal is to allow the user to input specific job titles, or a parseable-json 
 WIP 🤠
 ## Backend
 
+
 # Project Structure
 WIP 🤠
+
 # Testing
 WIP 🤠
+
 # Deployment
+WIP 🤠
+
+# Example Usage
+WIP 🤠
+
+# API Documentation
 WIP 🤠
