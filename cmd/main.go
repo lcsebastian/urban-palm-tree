@@ -83,11 +83,11 @@ func loadTestFilters(filename string) []Filter {
 }
 
 func getResumes(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, loadTestResumes("resume.json"))
+	c.IndentedJSON(http.StatusOK, loadTestResumes("data/resume.json"))
 }
 
 func getFilters(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, loadTestFilters("filter.json"))
+	c.IndentedJSON(http.StatusOK, loadTestFilters("data/filter.json"))
 }
 
 func main() {
