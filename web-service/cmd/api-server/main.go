@@ -1,12 +1,12 @@
 package main
 
 import (
-	"net/http"
-	"github.com/gin-gonic/gin"
 	"encoding/json"
 	"fmt"
-	"os"
+	"github.com/gin-gonic/gin"
 	"log"
+	"net/http"
+	"os"
 )
 
 type Resume struct {
@@ -62,7 +62,7 @@ func loadTestResumes(filename string) []Resume {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	// Load the json bytes into the resume struct
 	var resume Resume
 	if err := json.Unmarshal(content, &resume); err != nil {
@@ -72,12 +72,12 @@ func loadTestResumes(filename string) []Resume {
 }
 
 func loadTestFilters(filename string) []Filter {
-		// open test file holding resume info
+	// open test file holding resume info
 	content, err := os.ReadFile(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	// Load the json bytes into the resume struct
 	var filter Filter
 	if err := json.Unmarshal(content, &filter); err != nil {
@@ -85,7 +85,6 @@ func loadTestFilters(filename string) []Filter {
 	}
 	return []Filter{filter}
 }
-
 
 func getResumes(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, loadTestResumes("resume.json"))
@@ -95,7 +94,7 @@ func getFilters(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, loadTestFilters("filter.json"))
 }
 
-func main () {
+func main() {
 	fmt.Println("Setting up router")
 	router := gin.Default()
 	router.GET("/resumes", getResumes)
