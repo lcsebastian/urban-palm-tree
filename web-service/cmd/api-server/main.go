@@ -57,13 +57,11 @@ type Filter struct {
 }
 
 func loadTestResumes(filename string) []Resume {
-	// open test file holding resume info
 	content, err := os.ReadFile(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Load the json bytes into the resume struct
 	var resume Resume
 	if err := json.Unmarshal(content, &resume); err != nil {
 		log.Fatal(err)
@@ -72,13 +70,11 @@ func loadTestResumes(filename string) []Resume {
 }
 
 func loadTestFilters(filename string) []Filter {
-	// open test file holding resume info
 	content, err := os.ReadFile(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Load the json bytes into the resume struct
 	var filter Filter
 	if err := json.Unmarshal(content, &filter); err != nil {
 		log.Fatal(err)
