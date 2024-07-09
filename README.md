@@ -8,24 +8,14 @@ The goal is to allow the user to input specific job titles, or a parseable-json 
 -   Write an AI API connector component that will accept the resume and filters and call the job board connector component.
 -   Write a user component that will store ephermal user data in a cache, like the resume, email, match threshold and saved job links. The cache data should be exportable to CSV.
 
-# Architecture
-## Frontend
-- htmx or Hyperscript
-- Containerized using Docker
-## Backend
-- Golang REST service with Gin (https://gin-gonic.com/docs/)
-- Database layer will just be in-memory for now
-- Containerized using Docker
-
-# Project Structure
-WIP 🤠
-
+# Needed libraries
+## Scraping
+- https://github.com/gocolly/colly
+## AI
+- https://github.com/kkdai/chatgpt
+  
 # Testing
-- Gingko test suites
-- Integration testing
-
-# Deployment
-WIP 🤠
+- testify https://github.com/stretchr/testify
 
 # API Endpoints
 ```
