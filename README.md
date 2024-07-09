@@ -84,8 +84,3 @@ Response Body, 200
 "matches" : [ "job.link/1", "job.link/2"]
 }
 ```
-WIP 🤠
-
-# Example Usage
-WIP 🤠
-
