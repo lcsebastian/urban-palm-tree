@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"fmt"
 )
 
 type JobType string
@@ -28,6 +29,10 @@ type LocationInfo struct {
 	State      string `json:"state,omitempty"`
 	Country    string `json:"country,omitempty"`
 	PostalCode string `json:"postalCode,omitempty"`
+}
+
+func (l LocationInfo) String() string {
+	return fmt.Sprintf("%v, %v, %v", l.City, l.State, l.Country)
 }
 
 type Resume struct {
@@ -70,7 +75,7 @@ type Filter struct {
 	ID         int            `json:"id,omitempty"`
 	PostedDate PostedDateEnum `json:"date posted,omitempty"`
 	RemoteOnly bool           `json:"remote only,omitempty"`
-	Location   []LocationInfo `json:"location,omitempty"`
+	Location   LocationInfo `json:"location,omitempty"`
 	Type       []JobType      `json:"job type,omitempty"`
 	MinimumPay float64        `json:"minimum pay,omitempty"`
 	Keywords   []string       `json:"keywords,omitempty"`
