@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/gocolly/colly"
 	"github.com/lcsebastian/urban-palm-tree/cmd"
-	"strings"
 )
 
 type Job cmd.Job
@@ -12,40 +13,41 @@ type Job cmd.Job
 const (
 	baseUrl = "https://dice.com"
 )
+
 // Defaults and Lookup Tables
-func getDefaultWorkplaceTypes() [] string {
+func getDefaultWorkplaceTypes() []string {
 	return []string{"Remote", "Hybrid"}
 }
 
 func jobTypeToEmploymentType(jobType cmd.JobType) string {
 	switch jobType {
-		case cmd.FullTime:
-			return "FULLTIME"
-		case cmd.PartTime:
-			return "PARTTIME"
-		case cmd.Contract:
-			return "CONTRACTS"
+	case cmd.FullTime:
+		return "FULLTIME"
+	case cmd.PartTime:
+		return "PARTTIME"
+	case cmd.Contract:
+		return "CONTRACTS"
+	default:
+		return ""
 	}
-	return ""
 }
 
 func getPostedDate(postedDate cmd.PostedDateEnum) string {
 	switch postedDate {
-		case cmd.Today:
-			return "ONE"
-		default:
-			return ""
+	case cmd.Today:
+		return "ONE"
+	default:
+		return ""
 	}
 }
 
 type DiceQuery struct {
-	BaseQuery []string
-	Location string
-	WorkplaceType []string
+	BaseQuery      []string
+	Location       string
+	WorkplaceType  []string
 	EmploymentType []string
-	PostedDate string
+	PostedDate     string
 }
-
 
 func (d DiceQuery) String() string {
 	return fmt.Sprintf("jobs?q=%v&location=%v&filters.postedDate=%v&filters.workplaceTypes=%v&filters.employmentType=%v&language=en",
@@ -53,30 +55,28 @@ func (d DiceQuery) String() string {
 		d.Location,
 		d.PostedDate,
 		strings.Join(d.WorkplaceType, "%7C"),
-		strings.Join(d.EmploymentType, "%7C"))	
+		strings.Join(d.EmploymentType, "%7C"))
 }
 
 // getQuery converts a Filter struct into a query object for dice.com.
 func getQuery(filter cmd.Filter) DiceQuery {
 	// build BaseQuery from job title + keywords
 	result := DiceQuery{}
-	for _, value := range append(filter.JobTitles, filter.Keywords...) {
-		result.BaseQuery = append(result.BaseQuery, value)
-	}
-	
+	result.BaseQuery = append(result.BaseQuery, append(filter.JobTitles, filter.Keywords...)...)
+
 	result.Location = fmt.Sprint(filter.Location)
-	
+
 	result.WorkplaceType = getDefaultWorkplaceTypes()
 	if filter.RemoteOnly {
 		result.WorkplaceType = []string{"Remote"}
 	}
-	
+
 	for _, value := range filter.Type {
 		result.EmploymentType = append(result.EmploymentType, jobTypeToEmploymentType(value))
 	}
-	
+
 	result.PostedDate = getPostedDate(filter.PostedDate)
-	
+
 	return result
 }
 
@@ -100,8 +100,7 @@ func Scrape(filter cmd.Filter) []Job {
 	c.OnRequest(func(r *colly.Request) {
 		fmt.Println("Visiting", r.URL.String())
 	})
-	
-	
+
 	c.Visit(baseUrl)
 
 	return nil
