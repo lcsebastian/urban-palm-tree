@@ -17,7 +17,7 @@
 	"experience": [ {
           "company": "Acme Co.",
           "position": "Actor",
-          "location": "Death Valley, CA",
+          "location": {"city": "Los Angeles", "state" : "California", "country" : "USA", "postalCode": "11111"},
           "date": "March 1800 - Current",
           "summary": "Started a union to help fellow coyotes deal with stagnant wages. Lead actor in more than 300 commercials."
         }],
