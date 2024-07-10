@@ -4,14 +4,15 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"github.com/lcsebastian/urban-palm-tree/cmd"
 )
 
 func getResumes(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, loadTestResumes("data/resume.json"))
+	c.IndentedJSON(http.StatusOK, cmd.LoadTestResumes("data/resume.json"))
 }
 
 func getFilters(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, loadTestFilters("data/filter.json"))
+	c.IndentedJSON(http.StatusOK, cmd.LoadTestFilters("data/filter.json"))
 }
 
 func main() {
