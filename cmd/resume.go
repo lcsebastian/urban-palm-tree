@@ -6,6 +6,30 @@ import (
 	"os"
 )
 
+type JobType string
+
+const (
+	FullTime, PartTime, Contract JobType = "FullTime", "PartTime", "Contract"
+)
+
+type PostedDateEnum string
+
+const (
+	Any, Today PostedDateEnum = "Any", "Today"
+)
+
+type SalaryRange struct {
+	Min float64
+	Max float64
+}
+
+type LocationInfo struct {
+	City       string `json:"city,omitempty"`
+	State      string `json:"state,omitempty"`
+	Country    string `json:"country,omitempty"`
+	PostalCode string `json:"postalCode,omitempty"`
+}
+
 type Resume struct {
 	ID        int `json:"id,omitempty"`
 	Education []struct {
@@ -25,7 +49,7 @@ type Resume struct {
 	Experience []struct {
 		Company  string `json:"company,omitempty"`
 		Position string `json:"position,omitempty"`
-		Location string `json:"location,omitempty"`
+		Location LocationInfo `json:"location,omitempty"`
 		Date     string `json:"date,omitempty"`
 		Summary  string `json:"summary,omitempty"`
 	} `json:"experience,omitempty"`
@@ -43,14 +67,27 @@ type Resume struct {
 }
 
 type Filter struct {
-	ID         int      `json:"id,omitempty"`
-	DatePosted string   `json:"date posted,omitempty"`
-	RemoteOnly bool     `json:"remote only,omitempty"`
-	Location   []string `json:"location,omitempty"`
-	JobType    []string `json:"job type,omitempty"`
-	MinimumPay int      `json:"minimum pay,omitempty"`
-	Keywords   []string `json:"keywords,omitempty"`
-	JobTitles  []string `json:"job titles,omitempty"`
+	ID         int            `json:"id,omitempty"`
+	PostedDate PostedDateEnum `json:"date posted,omitempty"`
+	RemoteOnly bool           `json:"remote only,omitempty"`
+	Location   []LocationInfo `json:"location,omitempty"`
+	Type       []JobType      `json:"job type,omitempty"`
+	MinimumPay float64        `json:"minimum pay,omitempty"`
+	Keywords   []string       `json:"keywords,omitempty"`
+	JobTitles  []string       `json:"job titles,omitempty"`
+}
+
+type Job struct {
+	Link        string
+	Title       string
+	Description string
+	Company     string
+	Location    LocationInfo
+	Remote      bool
+	Salary      SalaryRange
+	Type        JobType
+	PostedDate  PostedDateEnum
+	Skills      []string
 }
 
 func LoadTestResumes(filename string) []Resume {
