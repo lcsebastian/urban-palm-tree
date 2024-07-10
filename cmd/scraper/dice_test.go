@@ -1,11 +1,12 @@
 package cmd
 
 import (
+	"fmt"
+	"testing"
+
 	"github.com/lcsebastian/urban-palm-tree/cmd"
 	"github.com/stretchr/testify/assert"
-	"testing"
-	"fmt"
-)	
+)
 
 func TestScrape(t *testing.T) {
 	// assert equality
