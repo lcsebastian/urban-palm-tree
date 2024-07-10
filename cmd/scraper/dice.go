@@ -2,17 +2,24 @@ package cmd
 
 import (
 	"fmt"
+	"net/url"
 	"strings"
 
+	"context"
+	"time"
+
+	"os"
+
+	"github.com/chromedp/chromedp"
 	"github.com/gocolly/colly"
 	"github.com/lcsebastian/urban-palm-tree/cmd"
 )
 
 type Job cmd.Job
 
-const (
-	baseUrl = "https://dice.com"
-)
+func getBaseUrl() string {
+	return "https://dice.com"
+}
 
 // Defaults and Lookup Tables
 func getDefaultWorkplaceTypes() []string {
@@ -50,12 +57,14 @@ type DiceQuery struct {
 }
 
 func (d DiceQuery) String() string {
-	return fmt.Sprintf("jobs?q=%v&location=%v&filters.postedDate=%v&filters.workplaceTypes=%v&filters.employmentType=%v&language=en",
-		strings.Join(d.BaseQuery, " "),
-		d.Location,
-		d.PostedDate,
-		strings.Join(d.WorkplaceType, "%7C"),
-		strings.Join(d.EmploymentType, "%7C"))
+	queryValues := url.Values{}
+	queryValues.Add("q", strings.Join(d.BaseQuery, " "))
+	queryValues.Add("location", d.Location)
+	queryValues.Add("postedDate", d.PostedDate)
+	queryValues.Add("workplaceTypes", strings.Join(d.WorkplaceType, "|"))
+	queryValues.Add("employmentType", strings.Join(d.EmploymentType, "|"))
+	queryValues.Add("language", "en")
+	return fmt.Sprintf("jobs?%v", queryValues.Encode())
 }
 
 // getQuery converts a Filter struct into a query object for dice.com.
@@ -80,20 +89,56 @@ func getQuery(filter cmd.Filter) DiceQuery {
 	return result
 }
 
-func Scrape(filter cmd.Filter) []Job {
+// chromedp works >:3
+func Scrape(filter cmd.Filter) {
+	fullUrl := fmt.Sprintf("%v/%v", getBaseUrl(), getQuery(filter))
+	// Create a new context
+	ctx, cancel := chromedp.NewContext(context.Background())
+	defer cancel()
+
+	// Create a timeout context
+	ctx, cancel = context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+
+	// Variables to capture the scraped HTML
+	var res string
+	err := chromedp.Run(ctx,
+		chromedp.Navigate(fullUrl),
+		chromedp.Sleep(2*time.Second), // Wait for the page to load
+		chromedp.OuterHTML("html", &res),
+	)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	// Save HTML to file
+	if err := os.WriteFile("../../data/dice-page.txt", []byte(res), 0777); err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+}
+
+// Cannot use colly since Dice is so full of javascript and AJAX
+func CollyScrape(filter cmd.Filter) []Job {
 	// Instantiate default collector
 	c := colly.NewCollector(
 		colly.AllowedDomains("dice.com", "www.dice.com"),
+		colly.UserAgent("Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0"),
 	)
 
 	// On every a element which has href attribute call callback
-	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
-		link := e.Attr("href")
-		// Print link
-		fmt.Printf("Link found: %q -> %s\n", e.Text, link)
-		// Visit link found on page
-		// Only those links are visited which are in AllowedDomains
-		c.Visit(e.Request.AbsoluteURL(link))
+	c.OnHTML("a[class]", func(e *colly.HTMLElement) {
+		class := e.Attr("class")
+		if class == "card-title-link normal" {
+			fmt.Printf("Class found: %q -> %s\n", e.Text, class)
+			id := e.Attr("id")
+			fmt.Printf("Id found: %s", id)
+			link := fmt.Sprintf("%v/job-detail/%v", getBaseUrl(), id)
+			// Visit link found on page
+			// Only those links are visited which are in AllowedDomains
+			c.Visit(e.Request.AbsoluteURL(link))
+		}
 	})
 
 	// Before making a request print "Visiting ..."
@@ -101,7 +146,13 @@ func Scrape(filter cmd.Filter) []Job {
 		fmt.Println("Visiting", r.URL.String())
 	})
 
-	c.Visit(baseUrl)
+	c.OnResponse(func(r *colly.Response) {
+		// Print the response body (HTML)
+		fmt.Println(string(r.Body))
+	})
+
+	fullUrl := fmt.Sprintf("%v/%v", getBaseUrl(), getQuery(filter))
+	c.Visit(fullUrl)
 
 	return nil
 }
