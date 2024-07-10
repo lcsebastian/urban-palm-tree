@@ -1,8 +1,7 @@
-package main
+package cmd
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 )
@@ -54,7 +53,7 @@ type Filter struct {
 	JobTitles  []string `json:"job titles,omitempty"`
 }
 
-func loadTestResumes(filename string) []Resume {
+func LoadTestResumes(filename string) []Resume {
 	content, err := os.ReadFile(filename)
 	if err != nil {
 		log.Fatal(err)
@@ -67,7 +66,7 @@ func loadTestResumes(filename string) []Resume {
 	return []Resume{resume}
 }
 
-func loadTestFilters(filename string) []Filter {
+func LoadTestFilters(filename string) []Filter {
 	content, err := os.ReadFile(filename)
 	if err != nil {
 		log.Fatal(err)
