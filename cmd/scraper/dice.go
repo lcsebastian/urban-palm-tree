@@ -113,7 +113,7 @@ func Scrape(filter cmd.Filter) {
 	}
 
 	// Save HTML to file
-	if err := os.WriteFile("../../data/dice-page.txt", []byte(res), 0777); err != nil {
+	if err := os.WriteFile("../../data/dice-page.html", []byte(res), 0777); err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
