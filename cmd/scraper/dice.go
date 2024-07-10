@@ -1,9 +1,11 @@
 package cmd
 
 import (
-	"fmt"
-	"github.com/gocolly/colly"
+//	"github.com/gocolly/colly"
+"github.com/lcsebastian/urban-palm-tree/cmd"
 )
+
+type Filter cmd.Filter
 
 type SalaryRange struct {
 	Min float64
@@ -35,6 +37,6 @@ const (
 	baseUrl = "https://dice.com"
 )
 
-func scrape_jobs(filter Filter) []Job {
+func Scrape(filter Filter) []Job {
 	return nil
 }
