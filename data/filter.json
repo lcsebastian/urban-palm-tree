@@ -2,9 +2,9 @@
 	"id" : 1,
 	"date posted" : "Today",
 	"remote only" : true,
-	"location" : [{"city": "Los Angeles", "state" : "California", "country" : "USA", "postalCode": "11111"}],
+	"location" : {"city": "Los Angeles", "state" : "CA", "country" : "USA", "postalCode": "11111"},
 	"job type" : ["FullTime", "Contract"],
 	"minimum pay" : 120000,
-	"keywords" : ["java", "full-stack", "gcp", "jenkins"],
-	"job titles" : ["Software Engineer", "Data Engineer"]
+	"keywords" : ["java", "full stack", "gcp", "jenkins"],
+	"job titles" : ["software engineer"]
 }
