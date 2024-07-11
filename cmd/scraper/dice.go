@@ -2,7 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
+	"path/filepath"
+
 	"strings"
 
 	"context"
@@ -46,6 +49,14 @@ func getPostedDate(postedDate cmd.PostedDateEnum) string {
 	default:
 		return ""
 	}
+}
+
+func getAbsolutePath() string {
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		panic(err)
+	}
+	return dir
 }
 
 type DiceQuery struct {
@@ -119,25 +130,31 @@ func Scrape(filter cmd.Filter) {
 	}
 }
 
+func formatJobTitle(title string) string {
+	title = strings.TrimSpace(title)
+	title = strings.ReplaceAll(title, "  ", "")
+	title = strings.ReplaceAll(title, "\n", " ")
+	return title
+}
+
 // Cannot use colly since Dice is so full of javascript and AJAX
-func CollyScrape(filter cmd.Filter) []Job {
+func CollyScrape() []Job {
+	jobs := []Job{}
+	t := &http.Transport{}
+	t.RegisterProtocol("file", http.NewFileTransport(http.Dir("/")))
 	// Instantiate default collector
-	c := colly.NewCollector(
-		colly.AllowedDomains("dice.com", "www.dice.com"),
-		colly.UserAgent("Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0"),
-	)
+	c := colly.NewCollector()
+	c.WithTransport(t)
 
 	// On every a element which has href attribute call callback
-	c.OnHTML("a[class]", func(e *colly.HTMLElement) {
-		class := e.Attr("class")
-		if class == "card-title-link normal" {
-			fmt.Printf("Class found: %q -> %s\n", e.Text, class)
+	c.OnHTML(".card-title-link", func(e *colly.HTMLElement) {
+		if e.Attr("class") == "card-title-link normal" {
 			id := e.Attr("id")
-			fmt.Printf("Id found: %s", id)
 			link := fmt.Sprintf("%v/job-detail/%v", getBaseUrl(), id)
-			// Visit link found on page
-			// Only those links are visited which are in AllowedDomains
-			c.Visit(e.Request.AbsoluteURL(link))
+			jobs = append(jobs, Job{
+				Link:  link,
+				Title: formatJobTitle(e.Text),
+			})
 		}
 	})
 
@@ -147,12 +164,11 @@ func CollyScrape(filter cmd.Filter) []Job {
 	})
 
 	c.OnResponse(func(r *colly.Response) {
-		// Print the response body (HTML)
-		fmt.Println(string(r.Body))
+		fmt.Println(r.StatusCode)
 	})
 
-	fullUrl := fmt.Sprintf("%v/%v", getBaseUrl(), getQuery(filter))
-	c.Visit(fullUrl)
+	c.Visit("file://" + getAbsolutePath() + "/data/dice-page.html")
+	c.Wait()
 
-	return nil
+	return jobs
 }
