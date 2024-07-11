@@ -14,6 +14,10 @@ func TestScrape(t *testing.T) {
 	Scrape(filter)
 }
 
+func TestCollyScrape(t *testing.T) {
+	CollyScrape()
+}
+
 func TestGetQuery(t *testing.T) {
 	filter := cmd.LoadTestFilters("../../data/filter.json")[0]
 	assert.NotNil(t, filter)
